@@ -1,30 +1,45 @@
-{%extends 'all-news/base.html'%} {% block content %} {{ block.super}}
+{%extends 'all-news/base.html'%} {%load static%}{% load bootstrap3 %} {% block content %} {{block.super}}
 
 <div class="container">
-  <!-- Looping through news   -->
-  {% for news_item in news %}
 
-  <div class="row">
-    <!-- displaying News articles -->
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-      <h2 class="text-center">{{ news_item.title }}</h2>
+    <!-- Looping through news   -->
+    {% for news_item in news %}
+
+    <div class="row">
+        <!-- displaying News articles -->
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <h2 class="text-center"> {{ news_item.title }} </h2>
+            <p> <strong>Post :</strong>{{news_item.post}} </p>
+            <p>
+                <!-- <strong>Author :</strong>{{news_item.editor}} </p> -->
+                <p><strong>Posted {{news_item.pub_date|timesince}} ago by {{news_item.editor}}</strong></p>
+
+        </div>
+
+        <!--Display news Article images  -->
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <img src="{{news_item.article_image.url}}" class="img-responsive" alt="Image">
+        </div>
+
     </div>
 
-    <!--Display news Article images  -->
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-      <img
-        src="{{news_item.article_image.url}}"
-        class="img-responsive"
-        alt="Image"
-      />
+    {% empty %}
+    <div class="row">
+        <h2 class="text-center">There No News Items</h2>
     </div>
-  </div>
+    {% endfor %}
+    <div class="container-fluid">
 
-  {% empty %}
-  <div class="row">
-    <h2 class="text-center">There No News Items</h2>
-  </div>
-  {% endfor %}
+        <form action="{%url 'newsToday'%}" method="post">
+            {%csrf_token%} {% bootstrap_form letterForm layout='inline' %}
+            <input type="submit" value="Subscribe">
+        </form>
+
+    </div>
+
 </div>
 
 {% endblock %}
+<!--End of the block content-->
+{% block scripts %} {{block.super}}
+<script type="text/javascript" src="{%static 'js/newsletter.js'%}"></script>{% endblock %}
